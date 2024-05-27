@@ -1,0 +1,1781 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sonardyne View - Visor_Dashboard</title>
+    <link rel="stylesheet" href="/Visor/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/Visor/css/font-awesome.css" />
+    <link rel="stylesheet" href="/Visor/css/site.css" />
+
+    <link href="/Visor/css/spinner.css" rel="stylesheet" />
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/Visor/lib/bootstrap/dist/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="/Visor/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="/Visor/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+    <script src="/Visor/lib/jquery/dist/jquery.js"></script>
+    <link href="/Visor/lib/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+    <script src="/Visor/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/Visor/js/searchFilter.js"></script>
+    <script src="/Visor/js/Common.js"></script>
+    <script src="/Visor/js/bootstrap-toggle.js"></script>
+    <link href="/Visor/css/bootstrap-toggle.css" rel="stylesheet" />
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark p-0" style="background-color:black; ">
+            <div id="header" class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="/Visor/images/ge-monogram.png" style="padding: 5px 5px 5px 5px;" />
+                    <span>Visor Dashboard 1.1.0 <small><i>powered by</i> GE Power Conversion</small></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+<form action="/Visor/Login/Logout" class="navbar-right" id="logoutForm" method="post">                        <div class="pull-right">
+                            <div class="btn-toolbar pull-left">
+                                <div class="btn-group" style="padding: 5px 5px 5px 5px;">
+                                    <button class="btn btn-inverse dropdown-toggle text-light" data-toggle="dropdown">
+                                        <i class="icon-user"></i><span class="user-name" style="font-size:small">
+                                            105063241 (Admin)</span>
+                                            <i class="icon-chevron-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit();ChangeCss('');LoadSpinner();closeWindows();">
+                                            Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+<input name="__RequestVerificationToken" type="hidden" value="CfDJ8Pyj4QRa2KZEg5CSTcqXoMRamw1D_pGd6ddq0173DnM3CWxTyr78TKMBboR7ajzzhiza4Lo4VcolTHhXcCDAzgyPbdPRloZMmmOtygL5KeqFZAhOvD0EkXjeU5sRkza2dvzw2xNL1HRHTIx4hS-EL2m5mlS6XJr8GfFbWGtq1YQQoI0mOKQJ7uGT-w5YWlgqLg" /></form>            </div>
+        </nav>
+        <nav class="primary-navbar navbar-expand-sm navbar-dark bg-dark border-bottom">
+            <div class="container-fluid">
+                <ul class="navbar-nav flex-grow-1 navbar-expand-sm ">
+                    <li class="nav-item" id="liRealTimeView">
+                                <a id="aRealTimeView" class="nav-link" href="/Visor">Real Time</a>
+                    </li>
+                    <li class="nav-item" id="liHistoricalView">
+                                <a id="aHistoricalView" class="nav-link" href="/Visor/Home/HistoricalSeries">Historical</a>
+                    </li>
+                    <li class="nav-item" id="liSonardyneView">
+                                <a id="aSonardyneView" class="nav-link" href="/Visor/Home/SonardyneSeries">Sonardyne</a>
+                    </li>
+                    <li class="nav-item dropdown" id="liConfigurations">
+                                <a id="aConfigurations" class="nav-link  dropdown-toggle" data-toggle="dropdown" href="#">Admin</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/Visor/Users">User Configuration</a>
+                                    <a class="dropdown-item" href="/Visor/Sites">Site Configuration</a>
+                                </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div id="content" class="container-fluid">
+        <br />
+        <div class="container-fluid" id="siteSelectionDIV" style="display: none;">
+            <table>
+                <tr>
+                    <td class="m-2">
+                        <div class="pull-right m-2 row">
+                            <span>
+                                <label style="font-size: 14px; font-weight: bold; font-family: 'GE Inspira Sans'; padding-left: 10px; margin-left: 5px"><b>Site</b></label>
+                                <select id="selConfigSiteName" name="selConfigSiteName"
+                                        style="width: auto; height: 36px; padding: 2px 2px 2px 2px; text-align: left; font-size: 14px; font-family: 'GE Inspira Sans'; margin-left: 5px; border-radius: 4px; border: 1px solid #cccccc; " required
+                                        class="btn dropdown-toggle" onchange="onSiteChange()">
+                                    <option value="">Select Site...</option>
+                                </select>
+                                <label id="lblSignals" style="font-size: 14px; font-weight: bold; font-family: 'GE Inspira Sans'; padding-left: 10px; margin-left: 5px"><b>Signals</b></label>
+                            </span>
+                            <span id="selAssets">
+                                <label style="font-size: 14px; font-weight: bold; font-family: 'GE Inspira Sans'; padding-left: 10px; margin-left: 5px"><b>View</b></label>
+                                <select id="selConfigAssetName" name="selConfigAssetName"
+                                        style="width: auto; height: 36px; padding: 2px 2px 2px 2px; text-align: left; font-size: 14px; font-family: 'GE Inspira Sans'; margin-left: 5px; border-radius: 4px; border: 1px solid #cccccc; " required
+                                        class="btn dropdown-toggle" onchange="onAssetChange()">
+                                    <option value="traveltime">Travel Time</option>
+                                    <option value="latlongobs">LatLong Obs</option>
+                                    <option value="sigqual">Sig Qual</option>
+                                    <option value="qjsum">QJ Sum</option>
+                                    <option value="jxjy">Jx Jy</option>
+                                    <option value="gridposition">Grid Position</option>
+                                    <option value="gridpositiontime">Grid Position/Time</option>
+                                    <option value="pitchrollobs">PRH</option>
+                                    <option value="depthobs">Depth Obs</option>
+                                </select>
+                            </span>
+                            <span id="selDevices">
+                                <label style="font-size: 14px; font-weight: bold; font-family: 'GE Inspira Sans'; padding-left: 10px; margin-left: 5px"><b>Device</b></label>
+                                <select id="selConfigDevice" name="selConfigDevice"
+                                        style="width: auto; height: 36px; padding: 2px 2px 2px 2px; text-align: left; font-size: 14px; font-family: 'GE Inspira Sans'; margin-left: 5px; border-radius: 4px; border: 1px solid #cccccc; " required
+                                        class="btn dropdown-toggle" onchange="onDeviceChange()">
+                                    <option value="">Select Device...</option>
+                                </select>
+                            </span>
+                            <input id="hiddenSiteID" type="hidden" value="1" name="hiddenSiteID" />
+                            <span id="selSignalsGrp" class="input-group" onclick="opensignalPopUp()" style="font-family: 'GE Inspira Sans'; font-size: 14px; height: 35px; width: auto; margin-left: 5px">
+                                <input class="form-control" id="lblshwSignalCnt" style="font-family: 'GE Inspira Sans'; font-size: 14px; margin-left: 5px; border-radius: 4px;" placeholder="Select Signal..">
+                                <span class="input-group-append">
+                                    <span class="input-group-text" style="font-size:small;">&#9776;</span>
+                                </span>
+                            </span>
+                            <input id="signals" type="hidden" value="0" name="signals" />
+                            <input id="assets" type="hidden" value="0" name="assets" />
+                            <input id="selectedAsset" type="hidden" value="0" name="selectedAsset" />
+                            <input id="selectedSignals" type="hidden" value="0" name="selectedSignals" />
+                            <input id="currView" type="hidden" value="1" name="currView" />
+                            <span id="realTimeRangeSpan">
+                                <label style="font-size:14px;font-weight:bold;font-family:'GE Inspira Sans';padding-left:10px; margin-left:5px"><b>Range</b> <i class="icon-calendar"></i> </label>
+                                <select id="selRTChartRange" name="selRTChartRange"
+                                        style="width: auto; height: 36px; padding: 2px 2px 2px 2px; text-align: left; font-size: 14px; font-family: 'GE Inspira Sans'; margin-left: 5px; border-radius: 4px; border: 1px solid #cccccc; " required
+                                        class="btn dropdown-toggle" onchange="loadSiteKPIGraphData()">
+                                    <option value="10">10 minutes</option>
+                                    <option value="20">20 minutes</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="120">2 hours</option>
+                                </select>
+                            </span>
+                            <span id="historicalDateSpan">
+                                <label style="font-size:14px;font-weight:bold;font-family:'GE Inspira Sans';padding-left:10px; margin-left:5px"><b>From</b> <i class="icon-calendar"></i> </label>
+                                <span style="margin-left:5px"><input type="text" class="datepicker" style="width: 100px; height: 36px; text-align: center; font-size: 14px; font-family: 'GE Inspira Sans'; border-radius: 4px; border: 1px solid #cccccc; " id="dtFromDate"></span>
+                                <label style="font-size:14px;font-weight:bold;font-family:'GE Inspira Sans';padding-left:10px; margin-left:5px"><b> To </b><i class="icon-calendar"></i></label>
+                                <span style="margin-left:5px"><input type="text" class="datepicker" style="width: 100px; height: 36px; text-align: center; font-size: 14px; font-family: 'GE Inspira Sans'; border-radius: 4px; border: 1px solid #cccccc; " id="dtToDate"></span>
+                            </span>
+                            <button type="button" style="margin-left: 5px" class="btn btn-primary btn-sm" onclick="loadSiteKPIGraphData();">Load</button>
+                            <button id="downloadSonardyneMdfFiles" type="button" style="margin-left: 5px" class="btn btn-primary btn-sm" onclick="openSonardyneMdfFilesPopUp();">Mdf Files</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <main role="main" class="pb-3">
+            <style>
+    #updateSignalpopup, #signalpopup {
+        position: absolute;
+        z-index: 9;
+        /*background-color: #f1f1f1;
+        text-align: center;
+        border: 1px solid #d3d3d3;*/
+    }
+
+    #updateSignalpopup_bar, #signalpopup_bar {
+        /*padding: 10px;*/
+        cursor: move;
+        /*z-index: 10;
+        background-color: #2196F3;
+        color: #fff;*/
+    }
+</style>
+<script src="/Visor/lib/jquery/dist/jquery.min.js"></script>
+<script src="/Visor/lib/highcharts/highstock.js"></script>
+<script src="/Visor/lib/highcharts/exporting.js"></script>
+<script src="/Visor/lib/highcharts/export-data.js"></script>
+<script src="/Visor/lib/highcharts/highcharts.js"></script>
+<script src="/Visor/lib/highcharts/modules/timeline.js"></script>
+<script src="/Visor/lib/highcharts/modules/dumbbell.js"></script>
+<script src="/Visor/lib/highcharts/modules/lollipop.js"></script>
+<script src="/Visor/js/Common.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //Show Site dropdown
+        let siteSelectionDIV = document.getElementById('siteSelectionDIV');
+        siteSelectionDIV.style.display = 'block';
+        let currView = document.getElementById('currView');
+        currView.val = "2";
+        let _lblSignals = document.getElementById('lblSignals');
+        _lblSignals.style.display = 'none';
+        //Show Assets dropdown
+        let _selAssets = document.getElementById('selAssets');
+        _selAssets.style.display = 'block';
+        //Show Assets dropdown
+        let _selDevices = document.getElementById('selDevices');
+        _selDevices.style.display = 'block';
+        //Hide Signals dropdown
+        let _selSignalsGrp = document.getElementById('selSignalsGrp');
+        _selSignalsGrp.style.display = 'none';
+        //Hide Realtime hours filter
+        let _realTimeRangeSpan = document.getElementById('realTimeRangeSpan');
+        _realTimeRangeSpan.style.display = 'none';
+        //Hide historical Date filters
+        let _historicalDateSpan = document.getElementById('historicalDateSpan');
+        _historicalDateSpan.style.display = 'none';
+        //Show download Mdf Files button
+         let _downloadSonardyneMdfFiles = document.getElementById('downloadSonardyneMdfFiles');
+        _downloadSonardyneMdfFiles.style.display = 'block';
+        
+             
+        initDateControls();
+        hideDivGraph();
+        document.getElementById('liRealTimeView').className = "";
+        document.getElementById('liHistoricalView').className = "";
+        document.getElementById('liSonardyneView').className = "active";
+        document.getElementById('liConfigurations').className = "";
+    });
+
+    function hideDivGraph() {
+        var elementDiv = document.getElementById("divG0");
+        elementDiv.style.display = 'none';
+    }
+
+    function onSignalChange() {
+        let selectedAsset = $('#selConfigAssetName :selected').text();
+        let selectedAssetID = $('#selConfigAssetName').val();
+    }
+
+    function onDeviceChange() {
+        //let selectedAsset = $('#selConfigDevice :selected').text();
+        //let selectedAssetID = $('#selConfigDevice').val();
+        
+        loadSiteKPIGraphData();
+    }
+    
+    function onAssetChange() {
+        let selectedAsset = $('#selConfigAssetName :selected').text();
+        let selectedAssetID = $('#selConfigAssetName').val();
+        console.log('selectedAssetID: ' + selectedAssetID);
+
+        // Load the devices in Devices dropdown
+        $('#selConfigDevice').empty();
+        $("#selConfigDevice option").remove();
+        var assets = JSON.parse($("#assets").val());
+        switch (selectedAssetID) {
+          case "traveltime":
+            opt = new Option("HPT5000>>2201>>HPT5000", "6228731476627146623");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2202>>HPT5000","7555024334348525683");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2203>>HPT5000","2054706597503739554");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2204>>HPT5000","1441139959889488911");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2301>>HPT5000","2164507392778419609");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("\"6228731476627146623\",\"7555024334348525683\",\"2054706597503739554\",\"1441139959889488911\",\"2164507392778419609\"}]"));
+            break;
+          case "depthobs":
+            opt = new Option("HPT5000>>2201>>HPT5000", "6228731476627146623");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2202>>HPT5000","7555024334348525683");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2203>>HPT5000","2054706597503739554");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2204>>HPT5000","1441139959889488911");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2301>>HPT5000","2164507392778419609");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("\"6228731476627146623\",\"7555024334348525683\",\"2054706597503739554\",\"1441139959889488911\",\"2164507392778419609\"}]"));
+            break;
+          case "latlongobs":
+          opt = new Option("DGPS", "DGPS");
+            $('#selConfigDevice').append(opt);
+             $('#devices').val(JSON.stringify("[{\"DGPS\"}]"));
+            break;
+          case "obsview":
+          opt = new Option("Valid", "Valid");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("[{\"Valid\"}]"));
+            break;
+          case "sigqual":
+            opt = new Option("HPT5000>>2201>>HPT5000", "6228731476627146623");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2202>>HPT5000","7555024334348525683");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2203>>HPT5000","2054706597503739554");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2204>>HPT5000","1441139959889488911");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2301>>HPT5000","2164507392778419609");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("\"6228731476627146623\",\"7555024334348525683\",\"2054706597503739554\",\"1441139959889488911\",\"2164507392778419609\"}]"));
+            break;                            
+          case "qjsum":
+            opt = new Option("HPT5000>>2201>>HPT5000", "6228731476627146623");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2202>>HPT5000","7555024334348525683");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2203>>HPT5000","2054706597503739554");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2204>>HPT5000","1441139959889488911");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2301>>HPT5000","2164507392778419609");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("\"6228731476627146623\",\"7555024334348525683\",\"2054706597503739554\",\"1441139959889488911\",\"2164507392778419609\"}]"));
+            break;
+          case "jxjy":
+            opt = new Option("HPT5000>>2201>>HPT5000", "6228731476627146623");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2202>>HPT5000","7555024334348525683");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2203>>HPT5000","2054706597503739554");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2204>>HPT5000","1441139959889488911");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("HPT5000>>2301>>HPT5000","2164507392778419609");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("\"6228731476627146623\",\"7555024334348525683\",\"2054706597503739554\",\"1441139959889488911\",\"2164507392778419609\"}]"));
+            break;
+          case "gridposition":
+            opt = new Option("2301(K)","2164507392778419609");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("Trial Vessel(K)", "1745874714073709337");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("[{\"2164507392778419609\",\"1745874714073709337\"}]"));
+            break;
+          case "gridpositiontime":
+            opt = new Option("2301(K)","2164507392778419609");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("Trial Vessel(K)", "1745874714073709337");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("[{\"2164507392778419609\",\"1745874714073709337\"}]"));
+            break;
+          case "pitchrollobs":
+            opt = new Option("HPT5000", "HPT5000");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("Gyro", "Gyro");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("Trial Vessel", "Trial Vessel");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("VRU", "VRU");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("[{\"HPT5000\",\"VRU\"}]"));
+            break;
+          case "alarmsandevents":
+          opt = new Option("alarms", "Alarms");
+            $('#selConfigDevice').append(opt);
+            opt = new Option("events", "Events");
+            $('#selConfigDevice').append(opt);
+            $('#devices').val(JSON.stringify("[{\"alarms\",\"events\"}]"));
+            break;
+        }
+
+        onDeviceChange();
+    }
+
+    function onSiteChange() {
+        //alert("onSonardyneSiteChange");
+        document.getElementById('selConfigSiteName').value = '121212';
+        let selectedSiteText = $('#selConfigSiteName :selected').text();
+        let selectedSiteID = $('#selConfigSiteName').val();
+        console.log('selectedSonardyneSiteID: ' + selectedSiteID);
+
+        $('#signals').val(JSON.stringify("[]"));
+        $('#selectedSignals').val(JSON.stringify("[]"));       
+
+        if (selectedSiteID.length > 0) {
+            $("#loader").fadeIn();
+            var urlLink = '/Visor/Home/GetSonardyneSignalListById';
+            try {
+                $.ajax({
+                    type: "POST",
+                    url: urlLink,
+                    data: { selectedSiteid: selectedSiteID },
+                    dataType: "json",
+                    success: function (response, status) {
+                        if (!response.defsignals) {
+                            console.log('KPI Request Failed');
+                            siteNoSignalConfig();
+                        } else {
+                            var signals = response.defsignals;
+                            //alert(signals);                            
+                            $('#signals').val(JSON.parse(JSON.stringify(signals))); //store array
+                            console.log('Signals: ' + $('#signals').val());
+
+                            let _assetText = $('#selConfigAssetName :selected').text();
+                            let _assetID = $('#selConfigAssetName').val();
+                            try {
+                                var value = sessionStorage.getItem("assetId");
+                                //alert(value);
+                                if (value>0) {
+                                    $('#selConfigAssetName').val(value);
+                                }
+                            } catch (err) {
+                                //alert(err);
+                            }                            
+
+                            //Load Assets configured to the site
+                            onAssetChange();                        
+                        }
+                    }
+                });
+            } catch (err) {
+                console.log('OnSiteChange Error: ' + err);
+                $("#loader").fadeOut("slow");
+            }
+        }
+        $("#loader").fadeOut("slow");
+    }
+
+    function UpdateSignalData() {
+        $("#loader").fadeIn();
+        /*var signalarr = [];*/
+
+        //$('#checkboxContainer').find('input[type="checkbox"]').each(function () {
+        //    if ($(this).prop('checked')) {
+        //        signalarr.push($(this)[0].id);
+        //    }
+        //});
+        /*console.log('signalarr' + signalarr);*/
+        //EditSignal(int id, string SignalDisplayName, string SignalUnit, decimal SignalThreshold)
+        //document.getElementById('Id').value = item[0].signal.vcb_signal_id;
+        //document.getElementById('SiteId').value = item[0].siteId;
+        //document.getElementById('SignalName').value = item[0].signal.vcb_signal_asset_name + '.' + item[0].signal.vcb_signal_name;
+        //document.getElementById('SignalDisplayName').value = item[0].signalDisplayName;
+        //document.getElementById('SignalThreshold').value = item[0].signalThreshold;
+        //document.getElementById('SignalUnit').value = item[0].signalUnit;
+        let signalParams = { id: $('#Id').val(), siteId: $('#SiteId').val(), SignalDisplayName: $('#SignalDisplayName').val(), SignalUnit: $('#SignalUnit').val(), SignalThreshold: $('#SignalThreshold').val() };
+        //console.log('signalParams : ' + signalParams);
+        try {
+            $.ajax({
+                type: "POST",
+                url: '/Visor/Home/EditSignal',
+                data: signalParams,
+                dataType: "json",
+                success: function (response, status) {
+                    if (!response.success) {
+                        console.log('Could not save SelectedSignalsAsDefault');
+                    } else {
+                        //console.log(response.success);
+                        var item = JSON.parse($('#signals').val()).filter(item => item.id == $('#Id').val());
+                        item[0].signalDisplayName = $('#SignalDisplayName').val();
+                        item[0].signalThreshold = $('#SignalThreshold').val();
+                        item[0].signalUnit = $('#SignalUnit').val();
+                        loadSiteKPIGraphData();
+                    }
+                }
+                , complete: function () {
+                    $("#loader").fadeOut("slow");
+                }
+            });
+        } catch (err) {
+            $("#loader").fadeOut("slow");
+        }
+    }
+
+    function loadMdfFilesFromS3(fileName){
+            $("#loader").fadeIn();
+        let params = { filePath: "Sonardyne", fileName: fileName };
+            //console.log('signalParams : ' + signalParams);
+            try {
+                $.ajax({
+                    type: "POST",
+                url: '/Visor/Home/GetSignedUrlFromS3viaS3Athena_Rest',
+                data: params,
+                    dataType: "json",
+                    success: function (response, status) {
+                        if (!response.success) {
+                            console.log('File not exist');
+                        } else {
+                            //console.log(response.success);
+                            var url = response.success;
+                            window.open(url);
+                        }
+                    }
+                    , complete: function () {
+                        $("#loader").fadeOut("slow");
+                    }
+                });
+            } catch (err) {
+                $("#loader").fadeOut("slow");
+            }
+    }
+
+    function saveSelectedSignalsAsDefault() {
+        $("#loader").fadeIn();
+
+        //var signalarr = $('#selSignals').val().join();
+        var signalarr = [];
+        $('#checkboxContainer').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop('checked')) {
+                signalarr.push($(this)[0].id);
+            }
+        });
+        //console.log('signalarr' + signalarr);
+        let signalParams = { signals: signalarr.join(), view: 'H', serialNo: $('#selConfigSiteName').val() };
+        //console.log('signalParams : ' + signalParams);
+        try {
+            $.ajax({
+                type: "POST",
+                url: '/Visor/Home/SaveDefaultSignals',
+                data: signalParams,
+                dataType: "json",
+                success: function (response, status) {
+                    if (!response.success) {
+                        console.log('Could not save SelectedSignalsAsDefault');
+                    } else {
+                        console.log("Successfully saved as default signals for Historical view");
+                    }
+                }
+                , complete: function () {
+                    $("#loader").fadeOut("slow");
+                }
+            });
+        } catch (err) {
+            $("#loader").fadeOut("slow");
+        }
+        loadSiteKPIGraphData();
+    }
+
+    function getDefaultSelectedSignals() {
+        $("#loader").fadeIn();
+        let signalParams = { view: 'H', serialNo: $('#selConfigSiteName').val() };
+        //console.log('signalParams : ' + signalParams);
+        try {
+            $.ajax({
+                type: "POST",
+                url: '/Visor/Home/GetDefaultSignals',
+                data: signalParams,
+                dataType: "json",
+                success: function (response, status) {
+                    if (!response.success) {
+                        console.log('Could not get DefaultSelectedSignals');
+                    } else {
+                        //console.log("Got default signals for view= H" );
+                        var defaultsignals = JSON.parse(response.success);
+                        //console.log("default signals=" + defaultsignals);
+                        return defaultsignals;
+                    }
+                }
+                , complete: function () {
+                    $("#loader").fadeOut("slow");
+                }
+            });
+        } catch (err) {
+            $("#loader").fadeOut("slow");
+        }
+        return "";
+    }
+
+    //function loadSonardyneKPIGraphData() {
+    //    let selectedSiteID = $('#selConfigSiteName').val();
+    //    let selectedAsset = $('#selConfigAssetName').val();
+    //    var signals = JSON.parse($("#signals").val());
+    //    var assetSignals = signals.filter(item => item.signal.vcb_signal_asset_name == selectedAsset && item.signal.vcb_signal_status ==1);
+    //    var signalarr = [];
+    //    var signalnamearr = [];
+
+    //    //Check Site Name is Selected.
+    //    if (selectedSiteID < 1) {
+    //        alert("Please select the site");
+    //        $("#loader").fadeOut('slow');
+    //        return;
+    //    }
+
+    //    let urlLink = "";
+    //    let dataSource = "db";
+    //    {
+    //        urlLink = '/Visor/Home/GetRawKPIDataforSonardynePOC';
+    //        var _signalNameItem;
+
+    //        $("#loader").fadeIn();
+    //            let signalParams = { signalName: selectedAsset + '.' + assetSignals[0].signal.vcb_signal_name, siteID: selectedSiteID };
+    //            let AssetName = selectedAsset;
+    //            let __signalname = assetSignals[0].signal.vcb_signal_name;
+                
+    //            try {
+    //                $.ajax({
+    //                    type: "POST",
+    //                    url: urlLink,
+    //                    data: signalParams,
+    //                    dataType: "json",
+    //                    success: function (kpiData, status) {
+    //                        //kpiData has no data
+    //                        if (kpiData == "[]" || kpiData == "[[]]") {
+    //                            console.log('kpiData : no data found ');
+    //                            loadEmptyChart(0, signal);
+    //                            $("#loader").fadeOut("slow");
+    //                            return;
+    //                        }
+    //                        if (!kpiData.success) {
+    //                            console.log('KPI Request Failed');
+    //                        } else {
+    //                            var signal = JSON.parse($('#signals').val()).filter(item => item.id == assetSignals[0].signal.vcb_signal_id);
+    //                            //kpiData has success data
+    //                            var KpiData = kpiData.success;
+    //                            //alert("KpiData" + KpiData);
+    //                            if (KpiData == "[]" || KpiData == "[[]]") {
+    //                                console.log('kpiData : no data found ');
+    //                                loadEmptyChart(0, signal);
+    //                                $("#loader").fadeOut("slow");
+    //                                return;
+    //                            }
+    //                            //console.log('kpiData_success' + KpiData.length);
+
+    //                            var DataPoints = [];
+    //                            if (dataSource == "db") {
+    //                                DataPoints = JSON.parse(KpiData);
+    //                                //console.log('db_DataPoints' + DataPoints);
+    //                            } else {
+    //                                var PlotDataObject = JSON.parse(KpiData);
+    //                                console.log('Sonardyne New - s3_PlotDataObject' + PlotDataObject);
+    //                                DataPoints = PlotDataObject.DataPoints;
+    //                                //console.log('Historical - s3_DataPoints' + DataPoints);
+    //                            }
+
+    //                            let PointCount = DataPoints.length;
+    //                            //console.log("i=" + i + ", SignalId=" + checkBoxesSelected[i].dataset.assetname + '.' + assetSignals[i].signal.vcb_signal_name + ', ' + dataSource + ' PointCount: ' + PointCount);
+    //                            var Index;
+    //                            var data1 = [];
+                               
+    //                            if (PointCount > 0) {
+    //                                let turboThresholdLimit = PointCount;
+    //                                let min = Number.MAX_VALUE;
+    //                                let max = Number.MIN_VALUE;
+    //                                for (Index = 0; Index < PointCount; Index++) {
+    //                                    let itemObject = DataPoints[Index];
+
+    //                                    let key;
+    //                                    var Value = 0;
+    //                                    if (dataSource == "db") {
+    //                                        key = convertToJSONDateTime((itemObject.time.replace("T", " ")).replace("Z", " "));
+    //                                        //console.log('db_key' + key);
+    //                                        Value = itemObject[__signalname];
+    //                                    } else {
+    //                                        key = convertToJSONUTCDate(itemObject[0]);
+    //                                        //console.log('s3_key' + key);
+    //                                        Value = itemObject[1];
+    //                                    }
+
+    //                                    let newKey = key.match(/\d+/)[0] * 1;
+    //                                    //console.log(newKey);
+
+    //                                    if (Value == null) {
+    //                                        Value = 0;
+    //                                    } else {
+    //                                        Value = parseFloat(Value);
+    //                                        if (Value < min) {
+    //                                            min = Value;
+    //                                        }
+    //                                        if (Value > max) {
+    //                                            max = Value;
+    //                                        }
+    //                                    }
+
+    //                                    data1.push([newKey, Value]);
+
+    //                                }
+    //                                loadSonardyeChart(0, signal, data1, min, max, DataPoints);
+    //                            } else {
+    //                                loadEmptyChart(0, signal);
+    //                            }
+
+    //                        }
+    //                    }
+    //                    , complete: function () {
+    //                        $("#loader").fadeOut("slow");
+    //                    }
+    //                });
+    //            } catch (err) {
+    //                $("#loader").fadeOut("slow");
+    //            }
+    //    }
+    //}
+
+    function loadSiteKPIGraphData() {
+        let selectedSiteID = $('#selConfigSiteName').val();
+        let selectedAsset = $('#selConfigAssetName').val();
+        let selectedDevice = $('#selConfigDevice').val();
+        var signals = JSON.parse($("#signals").val());
+        //alert(signals);
+        var selAssetSignals = signals.filter(item => item.asset_name == selectedAsset && (item.device_name == 'All' || item.device_name == selectedDevice));
+        console.log("selAssetSignals" + selAssetSignals)
+
+        var signalarr = [];
+        var signalnamearr = [];
+
+        //Check Site Name is Selected.
+        if (selectedSiteID < 1) {
+            alert("Please select the site");
+            $("#loader").fadeOut('slow');
+            return;
+        }
+
+        let urlLink = "";
+        let dataSource = "db";
+        {
+            urlLink = '/Visor/Home/GetRawKPIDataforSonardynePOC';
+            var _signalNameItem;
+
+            $("#loader").fadeIn();
+            let signalParams = { signalName: selectedAsset + '.' + selAssetSignals[0].signal_name, deviceName: selectedDevice,  siteID: selectedSiteID };
+            let AssetName = selectedAsset;
+            let __signalname = selAssetSignals[0].signal_name;
+                
+            try {
+                $.ajax({
+                    type: "POST",
+                    url: urlLink,
+                    data: signalParams,
+                    dataType: "json",
+                    success: function (kpiData, status) {
+                        //kpiData has no data
+                        if (kpiData == "[]" || kpiData == "[[]]") {
+                            console.log('kpiData : no data found ');
+                            loadSonardyneEmptyChart(0, selAssetSignals);
+                            $("#loader").fadeOut("slow");
+                            return;
+                        }
+                        if (!kpiData.success) {
+                            console.log('KPI Request Failed');
+                        } else {
+                            //kpiData has success data
+                            var KpiData = kpiData.success;
+                            //alert("KpiData" + KpiData);
+                            if (KpiData == "[]" || KpiData == "[[]]") {
+                                console.log('kpiData : no data found ');
+                                loadSonardyneEmptyChart(0, selAssetSignals);
+                                $("#loader").fadeOut("slow");
+                                return;
+                            }
+                            //console.log('kpiData_success' + KpiData.length);
+
+                            var DataPoints = [];
+                            if (dataSource == "db") {
+                                DataPoints = JSON.parse(KpiData);
+                                //console.log('db_DataPoints' + DataPoints);
+                            } else {
+                                var PlotDataObject = JSON.parse(KpiData);
+                                console.log('Sonardyne New - s3_PlotDataObject' + PlotDataObject);
+                                DataPoints = PlotDataObject.DataPoints;
+                                //console.log('Historical - s3_DataPoints' + DataPoints);
+                            }
+
+                            let PointCount = DataPoints.length;
+                            //var Index;
+                            //var data1 = [];
+                               
+                            if (PointCount > 0) {
+                                
+                                if(selectedAsset == "jxjy" || selectedAsset == "gridposition"){
+                                    PlotXYGraph(DataPoints, "Sonardyne Demo");
+                                    //var min = Math.min(...DataPoints.map(item => Object.values(item)[1]));
+                                    //var max = Math.max(...DataPoints.map(item => Object.values(item)[1]));
+                                    //loadXYChart(0,selAssetSignals,DataPoints, min, max);
+                                } else {
+                                    if(selectedAsset == "alarmsandevents"){
+                                        //var ser = generatePFseries_events(selAssetSignals, DataPoints);    
+                                        var ser = generatePFseries(selAssetSignals, DataPoints);
+                                        plotTeesporttimeseries("Sonardyne Demo", selectedAsset, 'Day', 'Pf', ser, 'column');
+                                    } else {
+                                       
+                                        if(selectedAsset == "obsview"){
+                                            var ser = generateObsViewPFseries(selAssetSignals, DataPoints);
+                                            plotTeesporttimeseries("Sonardyne Demo", selectedAsset, 'Day', 'Pf', ser, 'spline');
+                                        } else {
+                                            var ser = generatePFseries(selAssetSignals, DataPoints);
+                                            plotTeesporttimeseries("Sonardyne Demo", selectedAsset, 'Day', 'Pf', ser, 'spline');
+                                        }
+                                    }
+                                    
+                                }                                   
+                            } else {
+                                loadEmptyChart(0, selAssetSignals);
+                            }
+
+                        }
+                    }
+                    , complete: function () {
+                        $("#loader").fadeOut("slow");
+                    }
+                });
+            } catch (err) {
+                $("#loader").fadeOut("slow");
+            }
+        }
+    }
+    
+    function loadSiteKPIGraphData_old() {
+        $('#selConfigSiteName').val() 
+        let selectedSiteID = $('#selConfigSiteName').val();
+        let selectedAsset = $('#selConfigAssetName').val();
+        var signals = JSON.parse($("#signals").val());
+        var assetSignals = signals.filter(item => item.signal.vcb_signal_asset_name == selectedAsset && item.signal.vcb_signal_status ==1);
+        var signalarr = [];
+        var signalnamearr = [];
+
+        //Check Site Name is Selected.
+        if (selectedSiteID < 1) {
+            alert("Please select the site");
+            $("#loader").fadeOut('slow');
+            return;
+        }
+
+        ////Check Signals are Selected.
+        var container = document.querySelector('#checkboxContainer');
+        var checkBoxesSelected = container.querySelectorAll('input[type="checkbox"]:checked');
+
+        let urlLink = "";
+        let dataSource = "db";
+        {
+            urlLink = '/Visor/Home/GetRawKPIDataforSonardynePOC';
+            var _signalNameItem;
+
+            $("#loader").fadeIn();
+            for (let i = 0; i < checkBoxesSelected.length; i++) {
+                let signalParams = { signalName: selectedAsset + '.' + assetSignals[i].signal.vcb_signal_name, siteID: selectedSiteID };
+                let AssetName = selectedAsset;
+                let __signalname = assetSignals[i].signal.vcb_signal_name;
+                
+                try {
+                    $.ajax({
+                        type: "POST",
+                        url: urlLink,
+                        data: signalParams,
+                        dataType: "json",
+                        success: function (kpiData, status) {
+                            //kpiData has no data
+                            if (kpiData == "[]" || kpiData == "[[]]") {
+                                console.log('kpiData : no data found ');
+                                loadEmptyChart(i, signal);
+                                $("#loader").fadeOut("slow");
+                                return;
+                            }
+                            if (!kpiData.success) {
+                                console.log('KPI Request Failed');
+                            } else {
+                                var signal = JSON.parse($('#signals').val()).filter(item => item.id == assetSignals[i].signal.vcb_signal_id);
+                                //kpiData has success data
+                                var KpiData = kpiData.success;
+                                //alert("KpiData" + KpiData);
+                                if (KpiData == "[]" || KpiData == "[[]]") {
+                                    console.log('kpiData : no data found ');
+                                    loadEmptyChart(i, signal);
+                                    $("#loader").fadeOut("slow");
+                                    return;
+                                }
+                                //console.log('kpiData_success' + KpiData.length);
+
+                                var DataPoints = [];
+                                if (dataSource == "db") {
+                                    DataPoints = JSON.parse(KpiData);
+                                    //console.log('db_DataPoints' + DataPoints);
+                                } else {
+                                    var PlotDataObject = JSON.parse(KpiData);
+                                    console.log('Sonardyne New - s3_PlotDataObject' + PlotDataObject);
+                                    DataPoints = PlotDataObject.DataPoints;
+                                    //console.log('Historical - s3_DataPoints' + DataPoints);
+                                }
+
+                                let PointCount = DataPoints.length;
+                                //console.log("i=" + i + ", SignalId=" + checkBoxesSelected[i].dataset.assetname + '.' + assetSignals[i].signal.vcb_signal_name + ', ' + dataSource + ' PointCount: ' + PointCount);
+                                var Index;
+                                var data1 = [];
+                                /*i = i + 1;*/
+                                if (PointCount > 0) {
+                                    let turboThresholdLimit = PointCount;
+                                    let min = Number.MAX_VALUE;
+                                    let max = Number.MIN_VALUE;
+                                    for (Index = 0; Index < PointCount; Index++) {
+                                        let itemObject = DataPoints[Index];
+
+                                        let key;
+                                        var Value = 0;
+                                        if (dataSource == "db") {
+                                            key = convertToJSONDateTime((itemObject.time.replace("T", " ")).replace("Z", " "));
+                                            //console.log('db_key' + key);
+                                            Value = itemObject[__signalname];
+                                        } else {
+                                            key = convertToJSONUTCDate(itemObject[0]);
+                                            //console.log('s3_key' + key);
+                                            Value = itemObject[1];
+                                        }
+
+                                        let newKey = key.match(/\d+/)[0] * 1;
+                                        //console.log(newKey);
+
+                                        if (Value == null) {
+                                            Value = 0;
+                                        } else {
+                                            Value = parseFloat(Value);
+                                            if (Value < min) {
+                                                min = Value;
+                                            }
+                                            if (Value > max) {
+                                                max = Value;
+                                            }
+                                        }
+
+                                        data1.push([newKey, Value]);
+
+                                    }
+                                    loadSonardyeChart(i, signal, data1, min, max, DataPoints);
+                                } else {
+                                    loadEmptyChart(i, signal);
+                                }
+
+                            }
+                        }
+                        , complete: function () {
+                            $("#loader").fadeOut("slow");
+                        }
+                    });
+                } catch (err) {
+                    $("#loader").fadeOut("slow");
+                }
+            }
+        }
+    }
+
+    //function loadSiteKPIGraphData() {
+    //    //console.log('loadSiteKPIGraphData - isRealTime:' + isRealTime);
+    //    $('#selConfigSiteName').val() 
+    //    let selectedSiteID = $('#selConfigSiteName').val();
+    //    var signalarr = [];
+    //    var signalnamearr = [];
+
+    //    //Check Site Name is Selected.
+    //    if (selectedSiteID < 1) {
+    //        alert("Please select the site");
+    //        $("#loader").fadeOut('slow');
+    //        return;
+    //    }
+
+    //    //Check Signals are Selected.
+    //    var container = document.querySelector('#checkboxContainer');
+    //    var checkBoxesSelected = container.querySelectorAll('input[type="checkbox"]:checked');
+    //    var sigcnt = checkBoxesSelected.length;
+    //    if (sigcnt < 1) {
+    //        if ($('#signals').val() < 1) {
+    //            alert("Signals not configured. Please contact the administrator");
+    //            siteNoSignalConfig();
+    //        } else {
+    //            alert("Please select signals");
+    //            SignalsNotSelected();
+    //        }
+    //        return;
+    //    } else {
+    //        SignalsSelected();
+    //    }
+
+    //    //signalarr = $('#selSignals').val();
+
+
+    //    let urlLink = "";
+    //    let dataSource = "db";
+    //    {
+    //        //Check selected dates are valid
+    //        //////////Commented for POC
+    //        ////////let _fromDate = $('#dtFromDate').val()
+    //        ////////let _toDate = $('#dtToDate').val()
+    //        ////////if (_toDate < _fromDate) {
+    //        ////////    $("#loader").fadeOut("slow");
+    //        ////////    alert('To Date should be greater than From Date');
+    //        ////////    return;
+    //        ////////}
+
+    //        ////////let fDate1 = new Date(_fromDate);
+    //        ////////let tDate2 = new Date(_toDate);
+
+    //        ////////let time_difference = tDate2.getTime() - fDate1.getTime();
+    //        ////////let NoOfDays = time_difference / (1000 * 60 * 60 * 24);
+
+    //        ////////if (NoOfDays > 6) {
+    //        ////////    alert('Historical View - You can not select more than 7 Days.');
+    //        ////////    return;
+    //        ////////}
+            
+    //        //////////Deside the Datasource. DB - if Last 7 days,   S3 - if dt > last 7 days
+    //        ////////var Last7Days = getLast7Days();
+    //        //////////console.log(Last7Days);
+    //        ////////let fromDate = new Date();
+    //        ////////let toDate = new Date();
+    //        ////////var fromDateInput = document.getElementById('dtFromDate');
+    //        ////////var toDateInput = document.getElementById('dtToDate');
+    //        ////////if (fromDateInput != null) {
+    //        ////////    fromDate = $('#dtFromDate').val()
+    //        ////////}
+    //        ////////if (toDateInput != null) {
+    //        ////////    toDate = $('#dtToDate').val()
+    //        ////////}
+
+    //        //////////let urlLink = "";
+    //        //////////let dataSource = "";
+    //        ////////if (Last7Days.includes(_fromDate) && Last7Days.includes(_toDate)) {
+    //        ////////    dataSource = "db";
+    //        ////////    urlLink = '/Visor/Home/GetRawKPIDataforSignalNameVSPwithDate_Rest';
+    //        urlLink = '/Visor/Home/GetRawKPIDataforSonardynePOC';
+    //        ////////} else {
+    //        ////////    dataSource = "s3";
+    //        ////////    urlLink = '/Visor/Home/GetRawKPIDataforSignalNameVSPviaS3Athena_Rest';
+    //        ////////}
+    //        //console.log('dataSource' + dataSource);
+    //        //$("#loader").fadeIn();
+    //        var _signalNameItem;
+
+    //        ////////for (let d = checkBoxesSelected.length; d < 6; d++) {
+    //        ////////    let _divName = "divG" + d;
+    //        ////////    var elementDiv = document.getElementById(_divName);
+    //        ////////    elementDiv.style.display = 'none';
+    //        ////////}
+    //        $("#loader").fadeIn();
+    //        for (let i = 0; i < checkBoxesSelected.length; i++) {
+    //            /*for (let i = 0; i < signalNameParam.length; i++) {*/
+    //            ////////let signalParams = { signalName: checkBoxesSelected[i].dataset.assetname + '.' + checkBoxesSelected[i].title, startDate: fromDate, endDate: toDate, siteID: selectedSiteID };
+    //            let signalParams = { signalName: checkBoxesSelected[i].dataset.assetname + '.' + checkBoxesSelected[i].title, siteID: selectedSiteID };
+    //            let AssetName = checkBoxesSelected[i].dataset.assetname;//signalnamearr[i].split('.', 1)[0];
+    //            console.log('assetname : ' + AssetName);
+    //            let __signalname = checkBoxesSelected[i].title;//signalnamearr[i].replace(AssetName + '.', '');
+    //            try {
+    //                $.ajax({
+    //                    type: "POST",
+    //                    url: urlLink,
+    //                    data: signalParams,
+    //                    dataType: "json",
+    //                    success: function (kpiData, status) {
+    //                        //kpiData has no data
+    //                        if (kpiData == "[]" || kpiData == "[[]]") {
+    //                            console.log('kpiData : no data found ');
+    //                            //var selectedSignals = $('#selectedSignals').val();
+    //                            loadEmptyChart(i, signal);
+    //                            //alert("chart is empty");
+    //                            /*loadEmptyChart(i, sigMaster, sigDetail);*/
+    //                            $("#loader").fadeOut("slow");
+    //                            return;
+    //                        }
+    //                        if (!kpiData.success) {
+    //                            console.log('KPI Request Failed');
+    //                        } else {
+    //                            var signal = JSON.parse($('#signals').val()).filter(item => item.id == checkBoxesSelected[i].id);//$('#selSignals').val()[i]);
+    //                            //var sigMaster = signal[0].signal;
+    //                            //var sigDetail = signal[0];
+
+    //                            //kpiData has no success data
+    //                            var KpiData = kpiData.success;
+    //                            if (KpiData == "[]" || KpiData == "[[]]") {
+    //                                console.log('kpiData : no data found ');
+    //                                //var selectedSignals = $('#selectedSignals').val();
+    //                                //alert("chart is empty");
+    //                                loadEmptyChart(i, signal);
+    //                                //loadEmptyChart(i, __SignalDisplayName, _signalNameQryParam);
+    //                                $("#loader").fadeOut("slow");
+    //                                return;
+    //                            }
+    //                            //console.log('kpiData_success' + KpiData.length);
+
+    //                            var DataPoints = [];
+    //                            if (dataSource == "db") {
+    //                                DataPoints = JSON.parse(KpiData);
+    //                                //console.log('db_DataPoints' + DataPoints);
+    //                            } else {
+    //                                var PlotDataObject = JSON.parse(KpiData);
+    //                                console.log('Sonardyne New - s3_PlotDataObject' + PlotDataObject);
+    //                                DataPoints = PlotDataObject.DataPoints;
+    //                                //console.log('Historical - s3_DataPoints' + DataPoints);
+    //                            }
+
+    //                            let PointCount = DataPoints.length;
+    //                            //console.log("i=" + i + ", SignalId=" + checkBoxesSelected[i].dataset.assetname + '.' + checkBoxesSelected[i].title + ', ' + dataSource + ' PointCount: ' + PointCount);
+    //                            var Index;
+    //                            var data1 = [];
+    //                            /*i = i + 1;*/
+    //                            if (PointCount > 0) {
+    //                                let turboThresholdLimit = PointCount;
+    //                                let min = Number.MAX_VALUE;
+    //                                let max = Number.MIN_VALUE;
+    //                                for (Index = 0; Index < PointCount; Index++) {
+    //                                    let itemObject = DataPoints[Index];
+
+    //                                    let key;
+    //                                    var Value = 0;
+    //                                    if (dataSource == "db") {
+    //                                        key = convertToJSONDateTime((itemObject.time.replace("T", " ")).replace("Z", " "));
+    //                                        //console.log('db_key' + key);
+    //                                        Value = itemObject[__signalname];
+    //                                    } else {
+    //                                        key = convertToJSONUTCDate(itemObject[0]);
+    //                                        //console.log('s3_key' + key);
+    //                                        Value = itemObject[1];
+    //                                    }
+
+    //                                    let newKey = key.match(/\d+/)[0] * 1;
+    //                                    //console.log(newKey);
+
+    //                                    if (Value == null) {
+    //                                        Value = 0;
+    //                                    } else {
+    //                                        Value = parseFloat(Value);
+    //                                        if (Value < min) {
+    //                                            min = Value;
+    //                                        }
+    //                                        if (Value > max) {
+    //                                            max = Value;
+    //                                        }
+    //                                    }
+
+    //                                    data1.push([newKey, Value]);
+
+    //                                }
+    //                                //console.log("i=" + i + ", SignalId=" + signalnamearr[i] + ", data=" + data1);
+
+    //                                loadSonardyeChart(i, signal, data1, min, max);
+    //                            } else {
+    //                                loadEmptyChart(i, signal);
+    //                            }
+
+    //                        }
+    //                    }
+    //                    , complete: function () {
+    //                        $("#loader").fadeOut("slow");
+    //                    }
+    //                });
+    //            } catch (err) {
+    //                $("#loader").fadeOut("slow");
+    //            }
+    //        }
+    //    }
+    //}
+
+    $(document).ajaxError(function () {
+        $("#loader").fadeOut("slow");
+        alert('Error to load the Page');
+    });
+
+    function formatDate(date) {
+        var dd = date.getDate();
+        var mm = date.getMonth() + 1;
+        var yyyy = date.getFullYear();
+        if (dd < 10) { dd = '0' + dd }
+        if (mm < 10) { mm = '0' + mm }
+        date = mm + '/' + dd + '/' + yyyy;
+        return date
+    }
+
+    function getLast7Days() {
+        var result = [];
+        for (var i = 0; i < 7; i++) {
+            var d = new Date();
+            d.setDate(d.getDate() - i);
+            result.push(formatDate(d))
+        }
+
+        return (result.join(','));
+    }
+
+    function getHistoricalData() {
+        let fromDate = new Date();
+        let toDate = new Date();
+
+        var fromDateInput = document.getElementById('dtFromDate');
+        var toDateInput = document.getElementById('dtToDate');
+
+        if (fromDateInput != null) {
+            fromDate = $('#dtFromDate').val()
+        }
+
+        if (toDateInput != null) {
+            toDate = $('#dtToDate').val()
+        }
+
+        //  alert(fromDate);
+        //  alert(toDate);
+
+    }
+
+    var selectDateOptions = {
+        minDate: '-1Y',
+        maxDate: 'today'
+    }
+
+    function initDateControls() {
+        $('#dtFromDate').datepicker(selectDateOptions);
+        $('#dtToDate').datepicker(selectDateOptions);
+        $('#dtFromDate').datepicker('setDate', new Date());
+        $('#dtToDate').datepicker('setDate', new Date());
+    }
+
+    function initDateControlsTesting() {
+
+        $("#dtFromDate").datepicker({
+            onSelect: function (selected) {
+                var date = $(this).datepicker('getDate');
+
+                    date.setDate(date.getDate() + 6); // Add 7 days
+                
+
+
+                $("#dtToDate").datepicker("option", "minDate", selected);
+                $("#dtToDate").datepicker("option", "maxDate", date);
+                $('#dtToDate').val('');
+            }
+        });
+
+        $("#dtToDate").datepicker();
+
+    }
+
+    //2021-05-24T18:30:33.748Z
+    function convertToJSONDateTime(strDate) {
+        var parts = strDate.split(/[- , : .]/);
+        var newDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]));
+        return '/Date(' + newDate.getTime() + ')/';
+    }
+</script>
+
+<div class="container-fluid">
+    <div class="spinner" id="loader" style="display:block;">
+        <div class="center-div">
+            <div class="inner-div">
+                <div class="loader"></div>
+                <h5 style="color: #004386; font-weight: bolder; ">Loading, Please wait...</h5>
+            </div>
+        </div>
+    </div>
+    <br />
+    
+    <div class="modal" id="editSignalContainer" style="overflow:auto;" tabindex="-1" role="dialog"
+         aria-labelledby="modelUpdateSignal" aria-hidden="true" data-backdrop="false">
+        <div class="modal-dialog  modal-dialog-centered draggable" role="dialog">
+            <div id="updateSignalpopup" class="modal-content">
+                <form action="/Visor/Home/EditSignal" method="post">
+                    <div id="updateSignalpopup_bar" class="modal-header" style="margin: 0px 0px 0px 0px; padding : 0px 0px 0px 0px;">
+                        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark w-100 h-100" style="background-color: black; color: white;">
+                                <span>Update Signal Info</span>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="modal-body" style="max-height: 450px;">
+                        <div id="divContentHeader1.0" class="col-md-12" style="height:auto;">
+                            
+                            <input type="hidden" id="Id" class="form-control" value="" />
+                            <div class="form-group row">
+                                <input id="SiteId" type="hidden" class="form-control" />
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label">SignalName</label>
+                                <input id="SignalName" value="" class="form-control" disabled />
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label">SignalDisplayName</label>
+                                <input id="SignalDisplayName" class="form-control" />
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label">SignalThreshold</label>
+                                <input id="SignalThreshold" class="form-control" />
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label">SignalUnit</label>
+                                <input id="SignalUnit" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" value="Save" onclick="UpdateSignalData()" class="btn btn-primary" />
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                <input name="__RequestVerificationToken" type="hidden" value="CfDJ8Pyj4QRa2KZEg5CSTcqXoMRamw1D_pGd6ddq0173DnM3CWxTyr78TKMBboR7ajzzhiza4Lo4VcolTHhXcCDAzgyPbdPRloZMmmOtygL5KeqFZAhOvD0EkXjeU5sRkza2dvzw2xNL1HRHTIx4hS-EL2m5mlS6XJr8GfFbWGtq1YQQoI0mOKQJ7uGT-w5YWlgqLg" /></form>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="reportDashboard" tabindex="-1" role="dialog" aria-labelledby="reportDashboard" aria-hidden="true" style="width:100%;" data-backdrop="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div id="signalpopup" class="modal-content" style="min-width: 600px; width: auto; height: 500px;">
+                <div id="signalpopup_bar" class="modal-header" style="margin:0px;padding:1px;">
+                    <header style="height: 40px; width: 100%; align-content: center; background-color: black;">
+                        <h6 id="hdSignals" style="float:left;font-size:16px;color:whitesmoke;font-family:'GE Inspira Sans'; padding:8px;height:15px;">Signals : </h6>
+                        <span style="cursor:pointer;margin:0px;padding:5px;float:right;">
+                            <span class="btn" style="padding-top: 1px; padding-bottom: 2px; margin: 2px 2px 2px 2px; height: 15px; width: 16px; color: #FFFFFF; font-family: 'GE Inspira Sans'; cursor: pointer; " data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                        </span>
+                        <span style="cursor: pointer; margin: 0px; padding: 5px; float: right;">
+                            <<a class="btn btn-primary btn-sm" style="padding-top: 1px; padding-bottom: 2px; margin: 2px 2px 2px 2px; height: 15px; width: 16px; color: #FFFFFF; font-family: 'GE Inspira Sans'; cursor: pointer; " onclick="saveSelectedSignalsAsDefault()">Save</a>
+                            <a id="cleargigs" class="btn btn-primary btn-sm" style="padding-top: 1px; padding-bottom: 2px; margin: 2px 2px 2px 2px; height: 15px; width: 16px; color: #FFFFFF; font-family: 'GE Inspira Sans'; cursor: pointer; " onclick="clearallsignals()">Clear</a>
+                        </span>
+                    </header>
+                    
+                </div>
+                <div class="modal-body" style="padding: 0px; width: auto; min-width: 500px; height: 400px; ">
+
+                    <div class="outer col-sm-12 col-md-12" id="divsignaltrees" style="flex-grow:1;margin-top:0px;padding:0px;">
+                        <input class="stat-grid p-3 d-flex align-items-center justify-content-between" id="searchInput" type="text" placeholder="Search.." onkeyup="search(this.value.toLowerCase())" style="display:block; width:100%; height:30px; margin-left:0px; margin-top: 0px; margin-right:0px;font-size:14px;font-family:'GE Inspira Sans'">
+                        <div style="height:410px; width:100%; overflow:auto;white-space: nowrap; margin-right:0px;margin-left:0px; ">
+                            <div id="checkboxContainer" style="white-space:nowrap; height:auto; width:100%;margin-left:3px; margin-top: 0px; margin-right:3px;margin-bottom:3px;z-index: 0;padding:5px;font-size:14px"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="siteNotConfigID" class="container" style="display:none;">
+        <div class="container">
+            <table>
+                <tr>
+                    <td>
+                        <div>
+                            <p style="text-align:center;"><h4 style="text-align:center;">The KPI Signals for this site are not configured yet. Please contact administrator.</h4></p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="SignalsNotSelected" class="container" style="display:none;">
+        <div class="container">
+            <table>
+                <tr>
+                    <td>
+                        <div>
+                            <p style="text-align:center;"><h4 style="text-align:center;">Please select the signals.</h4></p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br />
+    <div class="row ui-sortable">
+        <div class="col-sm-12 col-md-12 mb-12" id="divG0">
+            <section class="module actionable draggable">
+                <header class="module-header"></header>
+                <div class="module-body">
+                    <div id="DashboardMetricGraph0" style="height: 600px;width:100%"></div>
+                    <div id="div2mwplotdata" class="outer col-sm" style="height:628px; overflow:auto;width:100%;padding:0px;margin:0px;"> </div>
+                </div>
+                <footer class="module-footer"></footer>
+            </section>
+        </div>
+    </div>
+    <div class="modal" id="mdfFiles" style="overflow:auto;" tabindex="-1" role="dialog"
+         aria-labelledby="modelMdfFiles" aria-hidden="true" data-backdrop="false">
+        <div class="modal-dialog  modal-dialog-centered draggable" role="dialog">
+            <div id="mdfFilepopup" class="modal-content">
+                <form>
+                    <div id="updateSignalpopup_bar" class="modal-header" style="margin: 0px 0px 0px 0px; padding : 0px 0px 0px 0px;">
+                        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark w-100 h-100" style="background-color: black; color: white;">
+                                <span>MDF Files</span>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="modal-body" style="max-height: 450px;">
+                        <div class="carousel slide" id="mdfFiles" data-ride="carousel" data-interval="6000" style="display:block;">
+                            <table class="table table-responsive table-bordered">
+                                <tr>
+                                    <th>File Name</th>
+                                    <th></th>
+                                </tr>
+                                    <tr>
+                                        <td>PJF5_1_Data.mdf</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="loadMdfFilesFromS3('PJF5_1_Data.mdf')">Download</button>
+
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                        <td>PJF5_2_Data.mdf</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="loadMdfFilesFromS3('PJF5_2_Data.mdf')">Download</button>
+
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                        <td>PJF5_3_Data.mdf</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="loadMdfFilesFromS3('PJF5_3_Data.mdf')">Download</button>
+
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                        <td>PJF5_4_Data.mdf</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="loadMdfFilesFromS3('PJF5_4_Data.mdf')">Download</button>
+
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                        <td>PJF5_5_Data.mdf</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="loadMdfFilesFromS3('PJF5_5_Data.mdf')">Download</button>
+
+                                    </td>
+                                    </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+
+
+        </main>
+        <div class="modal" id="divAbout" style="overflow:auto;" tabindex="-1" role="dialog"
+             aria-labelledby="aboutDashboard" aria-hidden="true" data-backdrop="false">
+            
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+           
+                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="background-color:black">
+                    <a class="navbar-brand" href="#">
+                        <img src="/Visor/images/ge-monogram.png" />
+                        <span>Visor Dashboard 1.1.0 <small><i>powered by</i> GE Power Conversion</small></span>
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </nav>
+           
+            <div class="modal-body">
+            <div id="divContentHeader1.0" class="col-md-12" style="height:auto;">
+                <h6 class="pull-left"><b><u>Feature Highlights - 1.1.0</u></b></h6>
+                <br />
+                <ul style="list-style-type: circle;text-align:left;" class="pull-left">
+                    <li>Fix: Admin Menu hidden for External & GE_Internal users</li>
+                    <li>Fix: Spinner alignment issue fixed.</li>
+                    <li>Fix: Historical View - Date issue fixed</li>
+                    <li>Fix: Historical View - Unauthorised Access message displayed for unauthorised users</li>
+                </ul>
+            </div>
+                <div id="divContentHeader1.0" class="col-md-12" style="height:auto;">
+                    <h6 class="pull-left"><b><u>Feature Highlights - 1.0.0</u></b></h6>
+                    <br />
+                    <ul style="list-style-type: circle;text-align:left;" class="pull-left">
+                        <li>New: SSO authentication</li>
+                        <li>New: Dashboard - To show the Real time data Graphs</li>
+                        <li>New: Dashboard - To show the historical data Graphs</li>
+                        <li>New: Admin - User and User-Site Permissions Configuration</li>
+                        <li>New: Admin - Site Configuration</li>
+                        <li>New: Admin - Site-Signals Configuration </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+        </div>
+        <div class="modal" id="divPrivacy" style="overflow:auto;" tabindex="-1" role="dialog"
+             aria-labelledby="PrivacyDashboard" aria-hidden="true" data-backdrop="false">
+            <!-- The Modal -->
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+        <!-- Modal Header -->
+        
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="background-color:black">
+                <a class="navbar-brand" href="#">
+                    <img src="/Visor/images/ge-monogram.png" />
+                    <span>Visor Dashboard 1.1.0 <small><i>powered by</i> GE Power Conversion</small></span>
+                </a>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </nav>
+        
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div id="divPrivacy" class="col-md-12" style="height:auto;">
+                <h6 class="pull-left"><b><u>Privacy</u></b></h6>
+                <p style="text-align:justify;" class="pull-left">
+                    This system is for the use of authorized users only.Individuals using this computer system
+                    without
+                    authority, or in excess of their
+                    authority, are subject to having all of their activities on this system monitored and recorded
+                    by system
+                    personnel.In the course of
+                    monitoring individuals improperly using this system, or in the course of system maintenance, the
+                    activities
+                    of authorized users may
+                    also be monitored.
+                </p>
+                <p style="text-align:justify;" class="pull-left">
+                    Anyone using this system expressly consents to such monitoring and is advised that if such
+                    monitoring
+                    reveals possible evidence of criminal
+                    activity, system personnel may provide the evidence of such monitoring to law enforcement
+                    officials.Sensitive information is any data
+                    designated as regulated by your business including but not limited to:
+                </p>
+                <ul style="list-style-type: circle;text-align:left;" class="pull-left">
+                    <li>
+                        U.S. Export Controls (i.e., other than "NLR", including ITAR-controlled) see GE Export
+                        Control
+                        Guidelines<a herf='http://sc.ge.com/*exportcontrolguideline'>http://sc.ge.com/*exportcontrolguideline</a>)
+                    </li>
+                    <li>Global Export Controls (including dual use technologies controlled by EC Reg 428/2009)</li>
+                    <li>Sensitive Security Information under US 49 C.F.R. Part 1520; and,</li>
+                    <li>
+                        Ge confidential />Restricted Data (see GE Data Classification Standard<a herf='http://sc.ge.com/*dataclassification'>http://sc.ge.com/*dataclassification</a>)
+                        including
+                        passwords and Personally Identifiable Information (PII) such as credit card numbers.
+                    </li>
+                </ul>
+                <p style="text-align:justify;" class="pull-left">
+                    Failure to comply with this requirement can result in immediate disciplinary action, including
+                    employment
+                    termination.
+                </p>
+            </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+
+    </div>
+</div>
+        </div>
+        <div class="modal" id="divTerms" style="overflow:auto;" tabindex="-1" role="dialog"
+             aria-labelledby="TermsDashboard" aria-hidden="true" data-backdrop="false">
+            <!-- The Modal -->
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+        <!-- Modal Header -->
+        
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="background-color:black">
+                <a class="navbar-brand" href="#">
+                    <img src="/Visor/images/ge-monogram.png" />
+                    <span>Visor Dashboard 1.1.0 <small><i>powered by</i> GE Power Conversion</small></span>
+                </a>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </nav>
+        
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div id="divTerms" class="col-md-12" style="height:auto;">
+                <h6 class="pull-left"><b><u>Terms</u></b></h6>
+                <p style="text-align:justify;" class="pull-left">
+                    This system is for the use of authorized users only.Individuals using this computer system
+                    without
+                    authority, or in excess of their
+                    authority, are subject to having all of their activities on this system monitored and recorded
+                    by system
+                    personnel.In the course of
+                    monitoring individuals improperly using this system, or in the course of system maintenance, the
+                    activities
+                    of authorized users may
+                    also be monitored.
+                </p>
+                <p style="text-align:justify;" class="pull-left">
+                    Anyone using this system expressly consents to such monitoring and is advised that if such
+                    monitoring
+                    reveals possible evidence of criminal
+                    activity, system personnel may provide the evidence of such monitoring to law enforcement
+                    officials.Sensitive information is any data
+                    designated as regulated by your business including but not limited to:
+                </p>
+                <ul style="list-style-type: circle;text-align:left;" class="pull-left">
+                    <li>
+                        U.S. Export Controls (i.e., other than "NLR", including ITAR-controlled) see GE Export
+                        Control
+                        Guidelines<a herf='http://sc.ge.com/*exportcontrolguideline'>http://sc.ge.com/*exportcontrolguideline</a>)
+                    </li>
+                    <li>Global Export Controls (including dual use technologies controlled by EC Reg 428/2009)</li>
+                    <li>Sensitive Security Information under US 49 C.F.R. Part 1520; and,</li>
+                    <li>
+                        Ge confidential />Restricted Data (see GE Data Classification Standard<a herf='http://sc.ge.com/*dataclassification'>http://sc.ge.com/*dataclassification</a>)
+                        including
+                        passwords and Personally Identifiable Information (PII) such as credit card numbers.
+                    </li>
+                </ul>
+                <p style="text-align:justify;" class="pull-left">
+                    Failure to comply with this requirement can result in immediate disciplinary action, including
+                    employment
+                    termination.
+                </p>
+            </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+
+    </div>
+</div>
+        </div>
+        <div class="modal" id="divContactUs" style="overflow:auto;" tabindex="-1" role="dialog"
+             aria-labelledby="ContactUsDashboard" aria-hidden="true" data-backdrop="false">
+            
+
+
+<!-- The Modal -->
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+        <!-- Modal Header -->
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="background-color:black">
+            <a class="navbar-brand" href="#">
+                <img src="/Visor/images/ge-monogram.png" />
+                <span>Visor Dashboard 1.1.0 <small><i>powered by</i> GE Power Conversion</small></span>
+            </a>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </nav>
+
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <p style="text-align:justify;" class="pull-left">
+                <span><b>For Visor Service Portal Support </b></span><br />
+                Email: vspdevsupport@ge.com
+                <br />
+                <br />
+
+                <span><b>Join the Visor Support site </b></span><br />
+                <a href="http://supportcentral.ge.com/products/sup_products.asp?prod_id=304017" target="_blank" class="link-btn">Click here</a>
+            </p>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+
+    </div>
+</div>
+        </div>
+    </div>
+
+    <footer style="position: fixed;left: 0;bottom: 0;width: 100%;">
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark p-0" style="background-color: black;position:static;bottom:0">
+            <div id="footer" class="container-fluid" style="background-color: black;bottom:0">
+                <div class="navbar-brand" href="#">
+                    <img src="/Visor/images/ge-monogram.png?v=S49tFgNJJXwU0ue6Uh6zhWlls_dCoYQjmTEO6kS8liI" style="padding: 5px 5px 5px 5px;" />
+                    <span style="font-family: 'GE Inspira Sans'; font-size: 12px; margin-left: 2px">Building a world that works</span>
+                </div>
+                <div class="block pull-right">
+                    <ul class="navbar-nav flex-grow-1 navbar-expand-sm ">
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="modal" href="#divAbout">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="modal" href="#divPrivacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="modal" href="#divTerms">Terms</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="modal" href="#divContactUs">Contact Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="modal" href="">© 2024 General Electric</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+    </footer>
+    <link href="/Visor/css/KpiDataStyles.css" rel="stylesheet" />
+    <script src="/Visor/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/Visor/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/Visor/js/site.js?v=zIFGmW-2fHs4SQcPVVdJRSAYHINY6_S2ceZg93fvi3o"></script>
+    <script src="/Visor/js/dashboard-kpi-script.js"></script>
+    <script src="/Visor/lib/highcharts/highcharts.js"></script>
+    <script src="/Visor/lib/highcharts/modules/data.js"></script>
+    <script src="/Visor/lib/highcharts/modules/no-data-to-display.js"></script>
+    <script src="/Visor/lib/highcharts/modules/exporting.js"></script>
+    <script src="/Visor/lib/highcharts/modules/export-data.js"></script>
+    <script src="/Visor/lib/highcharts/highcharts-more.js"></script>
+    <script src="/Visor/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="/Visor/lib/jquery/dist/jquery.blockUI.js"></script>
+    
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //if (isRealTime) {
+            //    $('#togBtn').bootstrapToggle('on');
+            //}
+            //else {
+            //    $('#togBtn').bootstrapToggle('off');
+            //}
+             //alert('Inside Site Dataload Layout alert');
+            try {
+                //Get Sites assigned to the logged in user.
+                $.ajax({
+                type: "POST",
+                url: "/Visor/Home/GetAllSiteList",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (kpiData, status) {
+                    if (!kpiData.success) {
+                        console.log('KPI Request Failed');
+                    } else {
+                        var SiteNames = [];
+                        SiteNames = kpiData.success;
+                        let l = SiteNames.length;
+                        console.log('Sites assigned to the logged in user:');
+                        console.log(SiteNames);
+                        var _siteNameItem;
+
+                        // Load the sites in Sites dropdown
+                        $('#selConfigSiteName').empty();
+                        $("#selConfigSiteName option").remove();
+                        for (let i = 0; i < SiteNames.length; i++) {
+                            _siteNameItem = SiteNames[i];
+
+                            opt = new Option(_siteNameItem["siteName"], _siteNameItem["siteId"]);
+                            $('#selConfigSiteName').append(opt);
+                        }
+
+                        let _siteText = $('#selConfigSiteName :selected').text();
+                        let _siteID = $('#selConfigSiteName').val();
+                        try {
+                            var value = sessionStorage.getItem("siteId");
+                            //alert(value);
+                            if (value>0) {
+                                $('#selConfigSiteName').val(value);
+                            }
+                        } catch (err) {
+                            //alert(err);
+                        }
+
+                        //let _realtimeViewSiteTitle = document.getElementById('ViewSiteTitle');
+                        //_realtimeViewSiteTitle.innerHTML = '<b>Real time View</b> - ' + _selectedSiteText;
+
+                        //Load Signals configured to the site
+                        onSiteChange();
+                    }
+                }
+                });
+
+            } catch (err) {
+
+            }
+
+        });
+
+        function getSiteID() {
+            let __selectedSiteText = $('#selConfigSiteName :selected').text();
+            let __selectedSiteID = $('#selConfigSiteName').val();
+
+           // alert(__selectedSiteText);
+           // alert(__selectedSiteID);
+        }
+
+        $(document).ready(function () {
+            $(document).on("change", "#selConfigSiteName", (function () {
+                //alert('Site Selection Change');
+                var selectText = $('option:selected', $(this)).text();
+                var siteId = $('option:selected', $(this)).val();
+
+                sessionStorage.setItem("siteId", siteId);
+            }));
+        });
+    </script>
+</body>
+
+</html>
